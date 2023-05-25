@@ -1,6 +1,17 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "baseUrl": "./src",
+    "moduleResolution": "node",
+    "paths": {
+      "@component/*": ["component/*"],
+      "@access/*": ["access/*"],
+      "@asset/*": ["asset/*"],
+    },
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@/*": ["src/*"]
+    // },
     "lib": [
       "dom",
       "dom.iterable",
@@ -14,13 +25,16 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "noImplicitAny": false,
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "src/**/*.ts", 
+    "src/component/**/*", 
+    "tests/**/*.ts"
   ]
 }

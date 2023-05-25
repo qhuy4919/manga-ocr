@@ -1,0 +1,46 @@
+.switch-mode-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+
+    .ant-menu {
+        width: unset !important;
+    }
+
+    .destination-language {
+        width: 100%;
+        .translate-language-popup {
+            padding: 0;
+            li {
+                padding: 0 10px;
+            }
+        }
+        
+    }
+
+    #preview-crop-image {
+    }
+
+    .preview-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        
+    }
+
+    .language-section {
+        flex: 0 1 auto;
+        padding: 10px;
+        .label {
+            padding: 10px 0;
+        }
+    }
+}

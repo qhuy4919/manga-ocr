@@ -1,0 +1,1 @@
+export { mangaAPI } from './manga';

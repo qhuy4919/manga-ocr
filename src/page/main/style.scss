@@ -1,0 +1,23 @@
+.main-page {
+    display: flex;
+    height: inherit;
+
+    .reader-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .dragger-manga {
+            width: 100%;
+            padding: 10%;
+        }
+
+        .process-button {
+            height: 50px;
+            width: 250px;
+
+        }
+    }
+}
