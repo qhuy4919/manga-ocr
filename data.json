@@ -1,0 +1,222 @@
+[
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\3.png",
+        "coordinate": {
+            "x1": 1051,
+            "y1": 158,
+            "width": 110,
+            "height": 308,
+            "x2": 1161,
+            "y2": 466
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\4.png",
+        "coordinate": {
+            "x1": 201,
+            "y1": 166,
+            "width": 58,
+            "height": 259,
+            "x2": 259,
+            "y2": 425
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\5.png",
+        "coordinate": {
+            "x1": 384,
+            "y1": 190,
+            "width": 66,
+            "height": 185,
+            "x2": 450,
+            "y2": 375
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\11.png",
+        "coordinate": {
+            "x1": 880,
+            "y1": 369,
+            "width": 67,
+            "height": 121,
+            "x2": 947,
+            "y2": 490
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\15.png",
+        "coordinate": {
+            "x1": 1131,
+            "y1": 563,
+            "width": 90,
+            "height": 134,
+            "x2": 1221,
+            "y2": 697
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\18.png",
+        "coordinate": {
+            "x1": 382,
+            "y1": 607,
+            "width": 91,
+            "height": 187,
+            "x2": 473,
+            "y2": 794
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\20.png",
+        "coordinate": {
+            "x1": 774,
+            "y1": 656,
+            "width": 92,
+            "height": 214,
+            "x2": 866,
+            "y2": 870
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\25.png",
+        "coordinate": {
+            "x1": 81,
+            "y1": 698,
+            "width": 107,
+            "height": 213,
+            "x2": 188,
+            "y2": 911
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\33.png",
+        "coordinate": {
+            "x1": 1074,
+            "y1": 976,
+            "width": 142,
+            "height": 231,
+            "x2": 1216,
+            "y2": 1207
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\34.png",
+        "coordinate": {
+            "x1": 450,
+            "y1": 977,
+            "width": 58,
+            "height": 186,
+            "x2": 508,
+            "y2": 1163
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\35.png",
+        "coordinate": {
+            "x1": 153,
+            "y1": 994,
+            "width": 58,
+            "height": 185,
+            "x2": 211,
+            "y2": 1179
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\40.png",
+        "coordinate": {
+            "x1": 829,
+            "y1": 1220,
+            "width": 202,
+            "height": 305,
+            "x2": 1031,
+            "y2": 1525
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\42.png",
+        "coordinate": {
+            "x1": 580,
+            "y1": 1250,
+            "width": 69,
+            "height": 101,
+            "x2": 649,
+            "y2": 1351
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\45.png",
+        "coordinate": {
+            "x1": 666,
+            "y1": 1277,
+            "width": 54,
+            "height": 101,
+            "x2": 720,
+            "y2": 1378
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\46.png",
+        "coordinate": {
+            "x1": 108,
+            "y1": 1293,
+            "width": 67,
+            "height": 210,
+            "x2": 175,
+            "y2": 1503
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\60.png",
+        "coordinate": {
+            "x1": 1092,
+            "y1": 1587,
+            "width": 120,
+            "height": 207,
+            "x2": 1212,
+            "y2": 1794
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\62.png",
+        "coordinate": {
+            "x1": 751,
+            "y1": 1600,
+            "width": 89,
+            "height": 147,
+            "x2": 840,
+            "y2": 1747
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\64.png",
+        "coordinate": {
+            "x1": 126,
+            "y1": 1629,
+            "width": 57,
+            "height": 181,
+            "x2": 183,
+            "y2": 1810
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\65.png",
+        "coordinate": {
+            "x1": 350,
+            "y1": 1684,
+            "width": 99,
+            "height": 125,
+            "x2": 449,
+            "y2": 1809
+        }
+    },
+    {
+        "imagePath": "C:\\Users\\Admin\\Desktop\\Japanese-OCR-Toolkit-V1.3\\backendServer\\Program-Backend\\Manga-Rikai-OCR\\testImages\\67.png",
+        "coordinate": {
+            "x1": 194,
+            "y1": 1717,
+            "width": 38,
+            "height": 112,
+            "x2": 232,
+            "y2": 1829
+        }
+    }
+]
