@@ -273,9 +273,9 @@ class ImagesDataCollection {
             this.currentImageData = nextImage
             this.initiateCurrentImage()
         }
-        else {
-            this.initiateFirstImage()
-        }
+        // else {
+        //     this.initiateFirstImage()
+        // }
     }
 
     initiatePreviousImage() {
@@ -284,9 +284,9 @@ class ImagesDataCollection {
             this.currentImageData = previousImage
             this.initiateCurrentImage()
         }
-        else {
-            this.initiateLastImage()
-        }
+        // else {
+        //     this.initiateLastImage()
+        // }
     }
 
     showID() {
