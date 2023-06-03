@@ -1,0 +1,23 @@
+{
+  "name": "CRAFT-pytorch",
+  "version": "1.0.0",
+  "description": "Official Pytorch implementation of CRAFT text detector | [Paper](https://arxiv.org/abs/1904.01941) | [Pretrained Model](https://drive.google.com/open?id=1Jk4eGD7crsqCCg9C9VjCLkMN3ze8kutZ) | [Supplementary](https://youtu.be/HI8MzpY8KMI)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clovaai/CRAFT-pytorch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clovaai/CRAFT-pytorch/issues"
+  },
+  "homepage": "https://github.com/clovaai/CRAFT-pytorch#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}

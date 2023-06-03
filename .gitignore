@@ -1,0 +1,10 @@
+*.pyc
+*.swp
+*.pkl
+*.pth
+result*
+weights*
+
+/node_modules
+/__pycache__
+/venv
