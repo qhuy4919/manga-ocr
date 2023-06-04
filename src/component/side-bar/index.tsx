@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Menu, Switch, Select } from 'antd';
 import type { MenuProps, SwitchProps } from 'antd';
-import { BookOutlined, SettingOutlined } from '@ant-design/icons';
-import { changeMode } from '../../middleware/manga-slice';
-import { useDispatch } from 'react-redux';
+import { BookOutlined } from '@ant-design/icons';
+import { changeLanguage, changeMode } from '../../middleware/manga-slice';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './style.scss'
+import { RootState } from 'middleware/store';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -44,6 +45,8 @@ export const Sidebar = ({
     getSideBarItemKey: (value: string) => void,
 }) => {
     const dispatch = useDispatch();
+    const currentLanguage = useSelector((state: RootState) => state.manga.language);
+
     const [currentKey, setCurrentKey] = useState('');
 
 
@@ -52,8 +55,8 @@ export const Sidebar = ({
         getSideBarItemKey(e.key);
     }
 
-    const handleChangeLanguage = () => {
-
+    const handleChangeLanguage = (value: string) => {
+        dispatch(changeLanguage({language: value}))
     };
 
     const items: MenuProps['items'] = [
@@ -68,10 +71,10 @@ export const Sidebar = ({
         getItem('Edit', 'edit', <BookOutlined />, [
             getItem('Detect All Textbox', 'detect-all-box', null),
         ]),
-        getItem('Export', 'sub2', <SettingOutlined />, [
-            getItem('PDF', 'export-pdf'),
-            getItem('Image', 'export-image'),
-        ]),
+        // getItem('Export', 'sub2', <SettingOutlined />, [
+        //     getItem('PDF', 'export-pdf'),
+        //     getItem('Image', 'export-image'),
+        // ]),
 
         { type: 'divider' },
     ];
@@ -90,7 +93,7 @@ export const Sidebar = ({
                 <div className="label">Translate Languages</div>
                 <Select
                 className='destination-language'
-                defaultValue={'en'}
+                value={currentLanguage}
                 onChange={handleChangeLanguage}
                 options={[
                     { value: 'vi', label: 'Vietnamese' },

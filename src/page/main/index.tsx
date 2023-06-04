@@ -39,9 +39,10 @@ export const MainPage = () => {
 
         setFile([...fileArray]);
         dispatch(updateFile({file: [...fileArray]}))
+        localStorage.setItem('manga-image-file', JSON.stringify(fileArray));
 
         if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
+            // console.log(info.file, info.fileList);
         }
         if (status === 'done') {
             message.success(`${info.file.name} file uploaded successfully.`);

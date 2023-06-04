@@ -4,16 +4,22 @@ import { Popover, Spin } from 'antd';
 import { mangaAPI } from '../../../../access';
 import { toast } from 'react-toastify';
 import './style.scss';
+import { useSelector } from 'react-redux';
+import { RootState } from 'middleware/store';
 
 type TextBoxProps = {
     outlineSpecArray: number[],
     pageImage: string,
+    ratio: number,
+    offsetList: Record<string, any>,
 }
 
-export const TextBox = ({ outlineSpecArray, pageImage }: TextBoxProps) => {
+export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: TextBoxProps) => {
     const textBoxId = outlineSpecArray[0];
     const [isLoading, setLoading] = useState<boolean>(false);
     const [transaltedText, setTranslatedText] = useState<string>('...');
+    const currentLanguage = useSelector((state: RootState) => state.manga.language);
+
 
 
     const cropToImage = (pointX,pointY,cropWidth,cropHeight) => {
@@ -44,9 +50,8 @@ export const TextBox = ({ outlineSpecArray, pageImage }: TextBoxProps) => {
         }
 
         try {
-            setLoading(true);
             const translateText = async () => {
-                const response: any = await mangaAPI.translateText(convertedText, 'vi');
+                const response: any = await mangaAPI.translateText(convertedText, currentLanguage);
 
                 if (response) {
                     console.log(response[0].translations[0].text);
@@ -55,14 +60,15 @@ export const TextBox = ({ outlineSpecArray, pageImage }: TextBoxProps) => {
             }
 
             const convertImage2Text = async () => {
-                const response = await mangaAPI.getTextFromImage(data);
-                convertedText = response as any;
+                setLoading(true);
+                const response: any = await mangaAPI.getTextFromImage(data);
+                convertedText = response.content as any;
                 await translateText()
             }
         
 
 
-            convertImage2Text();
+            await convertImage2Text();
         } catch (error) {
             toast.error('convert fail!', {
                 position: toast.POSITION.BOTTOM_CENTER,
@@ -80,7 +86,6 @@ export const TextBox = ({ outlineSpecArray, pageImage }: TextBoxProps) => {
             outlineSpecArray[3] + 20,
             outlineSpecArray[4] + 20,
         ))
-
     }
 
     return (
@@ -97,10 +102,10 @@ export const TextBox = ({ outlineSpecArray, pageImage }: TextBoxProps) => {
             id={`${textBoxId}`} className="text-box-wrapper"
             style={{
                 position: 'absolute',
-                left: outlineSpecArray[1] -10 ,
-                top: outlineSpecArray[2] -10,
-                width: outlineSpecArray[3] + 20,
-                height: outlineSpecArray[4] + 20,
+                left: outlineSpecArray[1]* ratio -10 + offsetList.left - 200,
+                top: outlineSpecArray[2]* ratio -10 + offsetList.top - 70,
+                width: outlineSpecArray[3] * ratio+ 20 ,
+                height: outlineSpecArray[4] * ratio+ 20 ,
                 backgroundColor: 'rgba(255, 0, 0, 0.5)',
             }}
             onMouseEnter={() => {

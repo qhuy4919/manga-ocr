@@ -10,5 +10,10 @@
 .overlay-text-box-popover {
     white-space: break-spaces;
     max-width: 20rem;
-    
+    .ant-popover-title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0;
+    }
 }

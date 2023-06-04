@@ -1,16 +1,16 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../middleware/store';
 import { BottomMenu } from './component'
 import { Sidebar } from '../../component';
 import { imageDataCollection } from './component/image-collection';
 import { Button } from 'antd';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import { mangaAPI } from '../../access';
-import { toCanvas } from 'html-to-image';
 import { TextBox } from './component';
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
 import "cropperjs/dist/cropper.css";
+import "react-toastify/dist/ReactToastify.css";
 import Cropper from 'cropperjs';
 import './style.scss';
 
@@ -26,12 +26,21 @@ export const ItemReader = () => {
     const [allTextBoxesData, setAllTextBoxesData] = useState<any>();
     const [pageImage, setPageImage] = useState<string>('');
     const [pageNumber, setPageNumber] = useState<number>(0);
+    const [ratio, setRatio] = useState<number>(1);
+    const [offsetList, setOffsetList] = useState<Record<string, any>>({});
 
     useEffect(() => {
         imageDataCollection.initiateAndSaveAllNewImagesData(imageArray);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [imageArray]);
+
+    useEffect(() => {
+        window.addEventListener("beforeunload", handleAlertWhenReload);
+        return () => {
+          window.removeEventListener("beforeunload", handleAlertWhenReload);
+        };
+    }, []);
 
     useEffect(() => {
         imageDataCollection.initiateCurrentImage();
@@ -101,9 +110,6 @@ export const ItemReader = () => {
                 const currentImage = await imageDataCollection.getCurrentSaveData();
                 if (currentImage && image) {
                     currentImage.convertAndAddAllCoordinatesArraysFromServer(allTextBoxes);
-                    // imageDataCollection.getAllTextboxesDataFromAnImage().forEach(corrdinateArray => {
-                    //     showAllTextBox(new Textbox(corrdinateArray).returnColorfulTextbox());
-                    // })
                     setAllTextBoxesData(imageDataCollection.getAllTextboxesDataFromAnImage());
                     showAllTextBox();
 
@@ -118,7 +124,10 @@ export const ItemReader = () => {
         if (outlinesContainer) {
             outlinesContainer.style.display = 'block';
         }
+    }
 
+    const handleAlertWhenReload = () => {
+        alert( "This page is reloaded and all current image all gone" );
     }
 
     const handleClick = () => setShowMenus(!showMenus);
@@ -130,10 +139,10 @@ export const ItemReader = () => {
         }
         try {
             const convertImage2Text = async () => {
-                const response = await mangaAPI.getTextFromImage(data);
+                const response: any = await mangaAPI.getTextFromImage(data);
 
                 if (response) {
-                    setConvertedText(JSON.stringify(response));
+                    setConvertedText(response?.content);
                 }
             }
 
@@ -149,20 +158,40 @@ export const ItemReader = () => {
     const handleClickSideBar = async (value: string) => {
         setAllTextBoxes([]);
         setAllTextBoxesData([]);
-        const imageElement = document.getElementById('main-screen-reader') as HTMLCanvasElement;
+        const image = document.getElementById('imageCanvas') as HTMLCanvasElement;
+        const originalImageSize = [
+            image.width,
+            image.height,
+        ];
 
-        const image = await toCanvas(imageElement);
+        const elementImageSize = [
+            image.getBoundingClientRect().width,
+            image.getBoundingClientRect().height,
+        ]
+
+        setRatio(elementImageSize[0] / originalImageSize[0]);
+        setOffsetList({
+            left: image.getBoundingClientRect().left,
+            right: image.getBoundingClientRect().right,
+            top: image.getBoundingClientRect().top,
+        })
+
+
+        // const image = await toCanvas(imageElement);
         setPageImage(image.toDataURL());
 
         try {
             if (value === 'detect-all-box') {
                 if (image) {
-                    const response = await mangaAPI.detextAllBox({
+                    const response: any = await mangaAPI.detextAllBox({
                         message: 'detect all textboxes',
                         content: image.toDataURL('image/png'),
                     })
 
-                    setAllTextBoxes(response as any);
+                    setAllTextBoxes(JSON.parse(response?.content) as any);
+                    toast.success("Dectect All Boxes Successfully!", {
+                        position: toast.POSITION.BOTTOM_RIGHT
+                    });
                 }
                 else {
                     toast.error("Error HTML Canvas !", {
@@ -185,6 +214,8 @@ export const ItemReader = () => {
         })
 
         return allTextBoxData2Array.map(coordinate => <TextBox
+            ratio={ratio}
+            offsetList={offsetList}
             outlineSpecArray={coordinate}
             pageImage={pageImage}
         />)
@@ -203,16 +234,17 @@ export const ItemReader = () => {
         imageDataCollection.initiatePreviousImage();
         setPageNumber(pageNumber - 1);
     }
-    
+
 
     return (
         <>
             <div className="reader-container">
+                <ToastContainer />
                 <div className="sidebar-container">
                     <Sidebar getSideBarItemKey={handleClickSideBar} />
                     {
                         MODE === 'MANUAL' && <div className="manual-action-button">
-                            <Button id='crop-button'>Submit</Button>
+                            <Button id='crop-button' type='primary'>Submit</Button>
                         </div>
                     }
                 </div>

@@ -57,9 +57,6 @@
         right: 30px;
     }
 
-    .cropper-container {
-
-    }
 }
 
 .sidebar-container {
@@ -81,6 +78,12 @@
 
     /* This rule is very important, please don't ignore this */
     max-width: 100%;
+}
+
+.manual-action-button {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
 }
 
 #outlinesContainer {
