@@ -1,0 +1,1 @@
+"%~dp0..\..\..\Power-Source\Python39\python.exe" .\flaskServer.py
