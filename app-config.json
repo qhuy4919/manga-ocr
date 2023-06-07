@@ -1,0 +1,7 @@
+{
+    "Manga_Rikai_OCR": {
+        "websocketServerPortNumber": 9575,
+        "HTTPserverPortNumber": 8575,
+        "pythonFlaskServerPortNumber": 7575
+    }
+}

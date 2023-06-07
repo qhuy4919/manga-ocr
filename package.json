@@ -7,7 +7,8 @@
     "server": "nodemon server.js",
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "dependencies": {
     "base64-img": "^1.0.4",
@@ -21,13 +22,25 @@
     "dotenv": "^8.0.0",
     "express": "^4.16.3",
     "form-data": "^3.0.0",
-    "iohook": "^0.6.6",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.11",
     "node-tesseract-ocr": "^2.0.0",
     "open": "^7.2.0",
     "puppeteer": "^5.5.0",
     "request": "^2.88.2",
     "universal-analytics": "^0.5.3",
     "ws": "^7.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qhuy4919/manga-ocr.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/qhuy4919/manga-ocr/issues"
+  },
+  "homepage": "https://github.com/qhuy4919/manga-ocr#readme",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }

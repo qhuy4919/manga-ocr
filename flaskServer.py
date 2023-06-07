@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, '../../Modules/')
 
 
-userSettingsPath = open("../../../User-Settings.json", encoding='utf8')
+userSettingsPath = open("./app-config.json", encoding='utf8')
 userSettings = json.load(userSettingsPath)
 pythonFlaskServerPortNumber = userSettings["Manga_Rikai_OCR"]["pythonFlaskServerPortNumber"]
 

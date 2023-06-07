@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs').promises;
 const base64Img = require('base64-img');
-const imgToText = require("../../Modules/OCR-Server/requestOCR.js")
+const imgToText = require("../Modules/OCR-Server/requestOCR.js")
 const processListOfCoordinates = require("./processListOfCoordinates.js")
 const translateTextOffline = require("./translateTextOffline.js")
 

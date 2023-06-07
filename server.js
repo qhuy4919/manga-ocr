@@ -1,4 +1,4 @@
-const fs = require('fs') 
+const fs = require('fs')
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,16 +10,16 @@ const exec = require('child_process').exec;
 
 const translateTextInImage = require("./imgTranslation.js")
 const requestAllTextBoxes = require("./requestAllTextboxes.js")
-const imgToText = require("../../Modules/OCR-Server/requestOCR.js")
+const imgToText = require("../Modules/OCR-Server/requestOCR.js")
 let translateTextOffline = require("./translateTextOffline.js")
 
 
-const listOfVariablesData = require("../../../User-Settings.json")
+const listOfVariablesData = require("./app-config.json")
 const HTTPserverPortNumber = listOfVariablesData.Manga_Rikai_OCR.HTTPserverPortNumber
 
-const GoogleAnalytics = require("../../Modules/Google-Analytics/GoogleAnalytics.js")
-const googleAnalytics = new GoogleAnalytics()
-googleAnalytics.logPageView("/mangarikaiocr")
+// const GoogleAnalytics = require("../../Modules/Google-Analytics/GoogleAnalytics.js")
+// const googleAnalytics = new GoogleAnalytics()
+// googleAnalytics.logPageView("/mangarikaiocr")
 // const websocketServerPortNumber = listOfVariablesData.Manga_Rikai_OCR.websocketServerPortNumber
 
 
@@ -61,8 +61,8 @@ googleAnalytics.logPageView("/mangarikaiocr")
 
 
 app.use(cors())
-app.use(bodyParser.json({limit: '100mb', extended: true}))
-app.use(bodyParser.urlencoded({limit: '100mb', extended: true}))
+app.use(bodyParser.json({ limit: '100mb', extended: true }))
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
 
 
 function closeTranslationAggregator() {
@@ -70,88 +70,109 @@ function closeTranslationAggregator() {
 };
 
 function translateCroppedImage(imageFile, res) {
-    base64Img.img(imageFile, '.', 'croppedImage', function(err, filepath) {});
-    Promise.resolve(translateTextInImage('croppedImage.png'))
+  base64Img.img(imageFile, '.', 'croppedImage', function (err, filepath) { });
+  Promise.resolve(translateTextInImage('croppedImage.png'))
     .then(result => {
       console.log(result)
       res.send(JSON.stringify(result))
     })
 }
 
-function detectAllTextboxes(imageFile, res) {
-    base64Img.img(imageFile, '.', 'wholeImage', function(err, filepath) {});
-    Promise.resolve(requestAllTextBoxes()).then(result => {
-      console.log(result)
-      res.send(JSON.stringify(result))
-    })
+async function detectAllTextboxes(imageFile, res) {
+  base64Img.img(imageFile, '.', 'wholeImage', function (err, filepath) { });
+  await Promise.resolve(requestAllTextBoxes()).then(result => {
+    if (!result.success) {
+      res.status(500).json({
+        succes: false,
+        content: 'server internal error',
+      })
+    }
+    else {
+      res.status(200).json({
+        succes: true,
+        content: JSON.stringify(result.content),
+      })
+    }
+  })
+
 }
 
 async function extractTextFromImage(imageFile, res) {
-    base64Img.img(imageFile, '.', 'croppedImage', function(err, filepath) {});
-    Promise.resolve(imgToText('croppedImage.png'))
+  base64Img.img(imageFile, '.', 'croppedImage', function (err, filepath) { });
+  await Promise.resolve(imgToText('croppedImage.png'))
     .then(result => {
-      console.log(result)
-      res.send(JSON.stringify(result))
+      if (!result.success) {
+        res.status(500).json({
+          succes: false,
+          content: 'OCR server error',
+        })
+      }
+      else {
+        res.status(200).json({
+          succes: true,
+          content: JSON.stringify(result.content),
+        })
+      }
     })
 }
 
-function sendMessageToServer(serverPort, thisContent, thisMessage) {  
-	fetch(`http://localhost:${serverPort}/`, {
-			method: 'post',
-			body:    JSON.stringify({content: thisContent, message: thisMessage}),
-			headers: { 'Content-Type': 'application/json' },
-		})
-		.then(res => res.json())
-		.then(json => console.log(json));
+function sendMessageToServer(serverPort, thisContent, thisMessage) {
+  fetch(`http://localhost:${serverPort}/`, {
+    method: 'post',
+    body: JSON.stringify({ content: thisContent, message: thisMessage }),
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then(res => res.json())
+    .then(json => console.log(json));
 }
 
 app.post('/', async function (req, res) {
-    const body = req.body;
-    let content = body.content
-    let message = body.message 
+  const body = req.body;
+  let content = body.content
+  let message = body.message
 
-  if(!body.content) {
+  if (!body.content) {
     res.json({
       status: 400,
       error: 'Invalid content'
     })
   }
 
-  if(message == "translate cropped image") {
-        translateCroppedImage(content, res)
-    }
+  if (message == "translate cropped image") {
+    translateCroppedImage(content, res)
+  }
 
-	if(message == "translate text") {
-        let translatedText = await translateTextOffline(body.content)
-		res.send(JSON.stringify(translatedText))
-    }
+  else if (message == "translate text") {
+    let translatedText = await translateTextOffline(body.content)
+    res.send(JSON.stringify(translatedText))
+  }
 
-    if(message == "detect all textboxes") {
-        detectAllTextboxes(content, res)
-    }
+  else if (message == "detect all textboxes") {
+    await detectAllTextboxes(content, res)
+  }
 
-    if(message == "extract text in cropped image") {
-        extractTextFromImage(content, res)
-    }
+  else if (message == "extract text in cropped image") {
+    await extractTextFromImage(content, res)
+  }
 
-	if (message == "save translation data to file") {
-		let translationData = content
-		fs.writeFileSync('translationData.json', JSON.stringify(translationData, null, 4));
-		res.send(JSON.stringify("translation data saved"))
-	}
+  else if (message == "save translation data to file") {
+    let translationData = content
+    fs.writeFileSync('translationData.json', JSON.stringify(translationData, null, 4));
+    res.send(JSON.stringify("translation data saved"))
+  }
 
-    if(message == "close translation aggregator") {
-        closeTranslationAggregator()
-		res.send(JSON.stringify("done"))
-    }
+  else if (message == "close translation aggregator") {
+    closeTranslationAggregator()
+    res.send(JSON.stringify("done"))
+  }
 
-    if(message == "close everything") {
-		//res.send(JSON.stringify("done"))
-		process.exit()
-      //await sendMessageToServer(7575, "no content", "close server") 
-      // res.send(JSON.stringify({content: "no content", message: "node server closing"}))
-      // process.exit()
-    }
+  else if (message == "close everything") {
+    //res.send(JSON.stringify("done"))
+    process.exit()
+    //await sendMessageToServer(7575, "no content", "close server") 
+    // res.send(JSON.stringify({content: "no content", message: "node server closing"}))
+    // process.exit()
+  }
 });
 
 app.listen(HTTPserverPortNumber, function (err) {
