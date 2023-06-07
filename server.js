@@ -10,7 +10,7 @@ const exec = require('child_process').exec;
 
 const translateTextInImage = require("./imgTranslation.js")
 const requestAllTextBoxes = require("./requestAllTextboxes.js")
-const imgToText = require("../Modules/OCR-Server/requestOCR.js")
+const imgToText = require("./requestOCR.js")
 let translateTextOffline = require("./translateTextOffline.js")
 
 
