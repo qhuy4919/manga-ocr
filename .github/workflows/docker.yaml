@@ -1,0 +1,20 @@
+name: Build and Push Docker Image
+
+on: workflow_dispatch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build and push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        run: |
+          echo $DOCKER_ACCESS_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+          docker build -t ${DOCKER_USERNAME}/manga_ocr_web:latest -f docker/Dockerfile .
+          docker push ${DOCKER_USERNAME}/manga_ocr_web:latest
