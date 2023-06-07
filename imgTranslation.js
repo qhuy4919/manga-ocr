@@ -1,5 +1,5 @@
 let translateTextOffline = require("./translateTextOffline.js")
-const imgToText = require("../Modules/OCR-Server/requestOCR.js")
+const imgToText = require("./requestOCR.js")
 
 module.exports =  async function translateTextInImage(imageFile) {
     let jpText = await imgToText(imageFile)
