@@ -26,6 +26,9 @@ jobs:
 
       - name: Dockerize
         env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_RapidAPI_Key: ${{ secrets.REACT_APP_RapidAPI_Key }}
+          REACT_APP_TRANSLATE_URL: ${{ secrets.REACT_APP_TRANSLATE_URL }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
           BRANCH_TO_BUILD: ${{ inputs.branch_to_build }}
@@ -37,7 +40,11 @@ jobs:
           if [[ "$BRANCH_TO_BUILD" == "main" ]]; then
             echo "Building and pushing image for `web` (nginx) component"
 
-            docker build -t ${DOCKER_USERNAME}/manga_ocr_web:latest -f docker/Dockerfile .
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_web:latest \
+                      --build-arg API_URL="$REACT_APP_API_URL" \
+                      --build-arg RAPID_API_KEY="$REACT_APP_RapidAPI_Key" \
+                      --build-arg TRANSLATE_URL="$REACT_APP_TRANSLATE_URL" \
+                      -f docker/Dockerfile .
             docker push ${DOCKER_USERNAME}/manga_ocr_web:latest
 
           elif [[ "$BRANCH_TO_BUILD" == "back-end" ]]; then
