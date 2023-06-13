@@ -1,0 +1,53 @@
+name: Dockerize branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_to_build:
+        description: "Choose the branch to build. Different branch will have different build commands."
+        required: true
+        default: main
+        type: choice
+        options:
+        - main
+        - back-end
+        - ocr-server
+        - text-detect-server
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch_to_build }}
+
+      - name: Dockerize
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          BRANCH_TO_BUILD: ${{ inputs.branch_to_build }}
+        run: |
+          echo $DOCKER_ACCESS_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+
+          echo "Building branch '${BRANCH_TO_BUILD}'"
+
+          if [[ "$BRANCH_TO_BUILD" == "main" ]]; then
+            echo "Building and pushing image for `web` (nginx) component"
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_web:latest -f docker/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_web:latest
+          elif [[ "$BRANCH_TO_BUILD" == "back-end" ]]; then
+            echo "Building and pushing image for `api` (express) component"
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_api:latest -f docker/api/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_api:latest
+
+            echo "Building and pushing image for `router` (flask) component"
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_router:latest -f docker/router/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_router:latest
+          else
+            echo "not supported yet"
+            exit 1
+          fi
+          echo "ok"
