@@ -36,18 +36,34 @@ jobs:
 
           if [[ "$BRANCH_TO_BUILD" == "main" ]]; then
             echo "Building and pushing image for `web` (nginx) component"
+
             docker build -t ${DOCKER_USERNAME}/manga_ocr_web:latest -f docker/Dockerfile .
             docker push ${DOCKER_USERNAME}/manga_ocr_web:latest
+
           elif [[ "$BRANCH_TO_BUILD" == "back-end" ]]; then
             echo "Building and pushing image for `api` (express) component"
+
             docker build -t ${DOCKER_USERNAME}/manga_ocr_api:latest -f docker/api/Dockerfile .
             docker push ${DOCKER_USERNAME}/manga_ocr_api:latest
 
             echo "Building and pushing image for `router` (flask) component"
             docker build -t ${DOCKER_USERNAME}/manga_ocr_router:latest -f docker/router/Dockerfile .
             docker push ${DOCKER_USERNAME}/manga_ocr_router:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "ocr-server" ]]; then
+            echo "Building and pushing image for `ocr` component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_ocr:latest -f docker/ocr/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_ocr:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "text-detect-server" ]]; then
+            echo "Building and pushing image for `textd` (text-detect-server) component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_textd:latest -f docker/textd/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_textd:latest
+
           else
-            echo "not supported yet"
+            echo "branch not supported"
             exit 1
           fi
           echo "ok"
