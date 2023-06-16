@@ -17,49 +17,6 @@ let translateTextOffline = require("./translateTextOffline.js")
 const listOfVariablesData = require("./app-config.json")
 const HTTPserverPortNumber = listOfVariablesData.Manga_Rikai_OCR.HTTPserverPortNumber
 
-// const GoogleAnalytics = require("../../Modules/Google-Analytics/GoogleAnalytics.js")
-// const googleAnalytics = new GoogleAnalytics()
-// googleAnalytics.logPageView("/mangarikaiocr")
-// const websocketServerPortNumber = listOfVariablesData.Manga_Rikai_OCR.websocketServerPortNumber
-
-
-// const WebSocket = require('ws');
-// const webSocketServer = new WebSocket.Server({ port: websocketServerPortNumber });
-
-// let mangaRikaiClient = []
-
-// webSocketServer.on('connection', (webSocketConnection) => {
-// 	webSocketConnection.on('message', async (data) => {
-// 		let parsedData = JSON.parse(data)
-
-// 		let message = parsedData.message
-// 		let content = parsedData.content
-
-// 		console.log('received: %s', message);
-
-// 		if (message == "add manga rikai client connection") {
-// 			console.log("successfully added client via websocket")
-// 			mangaRikaiClient.push(webSocketConnection)
-// 		}
-
-// 		if (message == "translate all pages") {
-// 			console.log("translate all pages")
-// 		}
-
-// 		if (message == "close server") {
-// 			res.send(JSON.stringify({content: "no content", message: "node server closing"}))
-// 			process.exit()
-// 		}
-
-// 	});
-
-// 	webSocketConnection.on('close', () => {
-// 		removeElementFromArray(webSocketConnection, mangaRikaiClient)
-// 	});
-
-// });
-
-
 app.use(cors())
 app.use(bodyParser.json({ limit: '100mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
@@ -69,42 +26,19 @@ function closeTranslationAggregator() {
   exec('taskkill /f /im TranslationAggregator.exe');
 };
 
-function translateCroppedImage(imageFile, res) {
-  base64Img.img(imageFile, '.', 'croppedImage', function (err, filepath) { });
-  Promise.resolve(translateTextInImage('croppedImage.png'))
-    .then(result => {
-      console.log(result)
-      res.send(JSON.stringify(result))
-    })
+function removeImageBase64Prefix(base64Img) {
+  const normalizeImageBase64 = base64Img.split(',');
+
+  return normalizeImageBase64[1];
 }
 
 async function detectAllTextboxes(imageFile, res) {
-  base64Img.img(imageFile, '.', 'wholeImage', function (err, filepath) { });
-  await Promise.resolve(requestAllTextBoxes()).then(result => {
-    if (!result.success) {
-      res.status(500).json({
-        succes: false,
-        content: 'server internal error',
-      })
-    }
-    else {
-      res.status(200).json({
-        succes: true,
-        content: JSON.stringify(result.content),
-      })
-    }
-  })
-
-}
-
-async function extractTextFromImage(imageFile, res) {
-  base64Img.img(imageFile, '.', 'croppedImage', function (err, filepath) { });
-  await Promise.resolve(imgToText('croppedImage.png'))
-    .then(result => {
+  Promise.resolve(saveImageInStorage(imageFile, res)).then(fileName => {
+    Promise.resolve(requestAllTextBoxes(fileName)).then(result => {
       if (!result.success) {
         res.status(500).json({
           succes: false,
-          content: 'OCR server error',
+          content: 'server internal error',
         })
       }
       else {
@@ -114,16 +48,52 @@ async function extractTextFromImage(imageFile, res) {
         })
       }
     })
+  })
+
 }
 
-function sendMessageToServer(serverPort, thisContent, thisMessage) {
-  fetch(`http://localhost:${serverPort}/`, {
-    method: 'post',
-    body: JSON.stringify({ content: thisContent, message: thisMessage }),
-    headers: { 'Content-Type': 'application/json' },
-  })
-    .then(res => res.json())
-    .then(json => console.log(json));
+async function extractTextFromImage(imageFile, res) {
+  // base64Img.img(imageFile, '.', 'croppedImage', function (err, filepath) { });
+   Promise.resolve(saveImageInStorage(imageFile, res)).then(fileName => {
+    Promise.resolve(imgToText(fileName))
+      .then(result => {
+        if (!result.success) {
+          res.status(500).json({
+            succes: false,
+            content: 'OCR server error',
+          })
+        }
+        else {
+          res.status(200).json({
+            succes: true,
+            content: JSON.stringify(result.content),
+          })
+        }
+      })
+  });
+}
+
+async function saveImageInStorage(imageBase64, res) {
+  try {
+    const storageServerResponse = await fetch('http://localhost:1606/upload-base64', {
+      method: 'POST',
+      body: JSON.stringify({
+          image: removeImageBase64Prefix(imageBase64),
+        }),
+      headers: { 'Content-Type': 'application/json' },
+
+    });
+
+    return await storageServerResponse.json().then((result) => {
+      return result.data.file_name;  
+    })
+
+  } catch (error) {
+     res.status(500).json({
+          succes: false,
+          content: 'Storage server error',
+        })
+      }
 }
 
 app.post('/', async function (req, res) {
@@ -162,16 +132,13 @@ app.post('/', async function (req, res) {
   }
 
   else if (message == "close translation aggregator") {
-    closeTranslationAggregator()
+    // closeTranslationAggregator()
     res.send(JSON.stringify("done"))
   }
 
   else if (message == "close everything") {
-    //res.send(JSON.stringify("done"))
     process.exit()
-    //await sendMessageToServer(7575, "no content", "close server") 
-    // res.send(JSON.stringify({content: "no content", message: "node server closing"}))
-    // process.exit()
+  
   }
 });
 

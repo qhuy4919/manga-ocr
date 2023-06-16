@@ -27,16 +27,15 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def sendTextboxesToMainServer():
     data = request.get_json()
     message = data.get("message")
-    content = data.get("content")
+    fileName = data.get("file_name")
     
-    imageFullPath = os.path.abspath("wholeImage.png")
 
-    print(message)
+    print('fileName', fileName)
 
     if (message == "detect all textboxes"):
         # in case of images not detected restart
         try:
-            listOfTextboxCoordinates = getListOfTextBoxes(imageFullPath)
+            listOfTextboxCoordinates = getListOfTextBoxes(fileName)
             
         except cv2.error as e:
             print("#########################################")
@@ -44,23 +43,23 @@ def sendTextboxesToMainServer():
             print("#########################################")
 
             sleep(0.3)
-            listOfTextboxCoordinates = getListOfTextBoxes(imageFullPath)
+            listOfTextboxCoordinates = getListOfTextBoxes(fileName)
         print(listOfTextboxCoordinates)
         return json.dumps(listOfTextboxCoordinates)
     
     if (message == "get all textboxes info"):
-        listOfTextboxCoordinates = getListOfTextBoxes(imageFullPath)
+        listOfTextboxCoordinates = getListOfTextBoxes(fileName)
         listOfTextboxInfo = getListOfCroppedTextboxImagesInfo(listOfTextboxCoordinates)
         return json.dumps(listOfTextboxInfo)
 
     if (message == "close server"):
         shutdown_server()
 
-    return json.dumps(content)
+    return json.dumps(fileName)
 
-def getListOfTextBoxes(imagePath):
+def getListOfTextBoxes(fileName):
     url = 'http://localhost:7676/'
-    myobj = {'message': 'detect text in image', "content": imagePath}
+    myobj = {'message': 'detect text in image', 'file_name': fileName}
     result = requests.post(url, json = myobj)
     return result.json()
 
