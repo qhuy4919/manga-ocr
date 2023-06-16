@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  web:
+    image: katsudon4919/manga_ocr_web:latest
+    ports:
+      - 80:80
+
+  api:
+    image: katsudon4919/manga_ocr_api:latest
+    ports:
+      - 5000:5000
+    networks:
+      - manga_ocr_network
+    environment:
+      - HTTP_HOST: 0.0.0.0
+      - HTTP_PORT: 5000
+
+  router:
+    image: katsudon4919/manga_ocr_api:latest
+    networks:
+      - manga_ocr_network
+
+  text_detection:
+    image: katsudon4919/manga_ocr_textd:latest
+    networks:
+      - manga_ocr_network
+  
+  text_recognition:
+    image: katsudon4919/manga_ocr_ocr:latest
+    networks:
+      - manga_ocr_network
+
+  storage:
+    image: katsudon4919/manga_ocr_storage:latest
+    networks:
+      - manga_ocr_network
+    environment:
+      - HTTP_HOST: 127.0.0.1
+      - HTTP_PORT: 1606
+
+networks:
+  manga_ocr_network:
