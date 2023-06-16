@@ -13,6 +13,7 @@ on:
         - back-end
         - ocr-server
         - text-detect-server
+        - storage
 
 jobs:
   build-and-push:
@@ -68,6 +69,12 @@ jobs:
 
             docker build -t ${DOCKER_USERNAME}/manga_ocr_textd:latest -f docker/textd/Dockerfile .
             docker push ${DOCKER_USERNAME}/manga_ocr_textd:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "storage" ]]; then
+            echo "Building and pushing image for `storage` (file-upload-server) component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_storage:latest -f docker/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_storage:latest
 
           else
             echo "branch not supported"
