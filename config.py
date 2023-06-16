@@ -15,6 +15,6 @@ if HOST is None:
 
 PORT = os.getenv('HTTP_PORT')
 if PORT is None:
-    PORT = 5000
+    PORT = 1606
 
 DefaultConfig = Config(HOST, PORT)
