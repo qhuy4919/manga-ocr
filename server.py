@@ -43,4 +43,5 @@ def delete_file(filename):
     return jsonify({ 'message': 'Cannot delete image', }), 500
 
 if __name__ == '__main__':
-    app.run()
+    from config import DefaultConfig as conf
+    app.run(host=conf.get_host(), port=conf.get_port())
