@@ -4,6 +4,10 @@ app = Flask(__name__)
 from storage import FileStorage
 FS = FileStorage('./data')
 
+from werkzeug.datastructures import FileStorage as FlaskFileStorage
+import base64
+import io
+
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'image' not in request.files:
@@ -19,6 +23,35 @@ def upload():
             'file_name': file_name
         }
     })
+
+@app.route('/upload-base64', methods=['POST'])
+def upload_base64():
+    data = request.json
+
+    if 'image' not in data:
+        return jsonify({ 'message': 'Missing required image' }), 400
+
+    try:
+        image_data = data['image']
+        image_bytes = base64.b64decode(image_data)
+        image_buffer = io.BytesIO(image_bytes)
+
+        file_name = FS.save_file(FlaskFileStorage(image_buffer))
+
+        if file_name is None:
+            raise Exception("Error at FileStorage, file name is None")
+
+        return jsonify({
+            'message': 'Image uploaded successfully!',
+            'data': {
+                'file_name': file_name
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'message': "Cannot upload image in base64 form. Please try again.",
+            'error': str(e),
+        }), 500
 
 @app.route('/image/<path:file_name>')
 def get_image(file_name):

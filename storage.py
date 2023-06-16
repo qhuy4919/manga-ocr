@@ -8,20 +8,29 @@ class FileStorage:
     def __init__(self, store_url):
         super().__init__()
         self.store_url = store_url
+        self.DEFAULT_FILE_NAME = "noname.jpg"
 
     def __get_path_to_file(self, fname):
         return os.path.join(self.store_url, fname)
     
     def __generate_name_from_file(self, file):
         random_uuid = uuid.uuid4()
-        random_uuid_str = str(random_uuid)[:13]
+        random_uuid_str = str(random_uuid)
+
         filename = file.filename
-        return f'{random_uuid_str}-{filename}'
+        if filename is None:
+            filename = self.DEFAULT_FILE_NAME
+
+        return f'{random_uuid_str}_{filename}'
 
     def save_file(self, file):
         file_name = self.__generate_name_from_file(file)
         file_path = self.__get_path_to_file(file_name)
         file.save(file_path)
+        try:
+            file.close()
+        except:
+            pass
         return file_name
 
     def get_file_url(self, file_name):
