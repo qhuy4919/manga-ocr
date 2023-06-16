@@ -12,7 +12,7 @@ services:
     network_mode: "host"
 
   router:
-    image: katsudon4919/manga_ocr_api:latest
+    image: katsudon4919/manga_ocr_router:latest
     network_mode: "host"
 
   text_detection:
