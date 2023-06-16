@@ -1,4 +1,4 @@
-FROM 3.10.12-alpine3.17
+FROM python:3.10.12-alpine3.17
 
 RUN apk update
 COPY . ./app
