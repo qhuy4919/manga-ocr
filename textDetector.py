@@ -139,11 +139,11 @@ net.load_state_dict(copyStateDict(torch.load("craft_mlt_25k.pth", map_location='
 net.eval()
 
 
-def detectText(imagePath):
+def detectText(image):
     refine_net = None
-    originalImage = cv2.imread(imagePath)
-
-    image = imgproc.loadImage(imagePath)
+    # originalImage = cv2.imread(imagePath)
+    image = np.array(image)
+    image = imgproc.preprocessImage(image)
     bboxes, polys = test_net(net, image, 0.15, 0.03, 0.015, False, False, refine_net)
 
     listOfFourCoordinates = processThenReturnListOfBoundingBoxes(bboxes)

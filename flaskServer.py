@@ -1,8 +1,10 @@
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
-
+import requests
+from PIL import Image
 from waitress import serve
+import io 
 
 import json
 import textDetector 
@@ -16,18 +18,26 @@ print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 print("text detection server ready")
 print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
+def getImagefromExpress(imageName):
+    url = f'http://localhost:1606/image/{imageName}'
+    img = Image.open(requests.get(url, stream=True).raw)
+    return img
+
 @app.route("/", methods = ['POST'])
 @cross_origin()
-
 def sendImage():
     data = request.get_json()
     message = data.get("message")
-    content = data.get("content")
+    fileName = data.get("file_name")
 
-    print("this content", content)
+    print("CRAFT payload", data)
     if (message == "detect text in image"):
-        imagePath = content
-        result = textDetector.detectText(imagePath)
+        
+        inputImage = getImagefromExpress(fileName)
+        
+        print('@@@@@@@@@@@@@huy@@@@@@@@@@@@@@@@@@@')
+
+        result = textDetector.detectText(inputImage)
         return json.dumps(result)
 
     if (message == "close server"):
