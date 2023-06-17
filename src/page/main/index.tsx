@@ -60,7 +60,8 @@ export const MainPage = () => {
                     <Dragger 
                     {...props} 
                     onChange={onChange} 
-                    className='dragger-manga'>
+                    className='dragger-manga'
+                    >
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>

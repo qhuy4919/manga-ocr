@@ -4,12 +4,14 @@ type initialStateType = {
     file: any[];
     mode: string;
     language: string,
+    isLoading: boolean,
 };
 
 const initialState: initialStateType = {
     file: [],
     mode: '',
     language: 'vi',
+    isLoading: false,
 }
 
 export const mangaSlice = createSlice({
@@ -18,6 +20,7 @@ export const mangaSlice = createSlice({
     reducers: {
         clearState: (state) => {
             state.file = [];
+            state.isLoading = false;
 
             return state;
         },
@@ -47,9 +50,19 @@ export const mangaSlice = createSlice({
             } = action;
 
             state.language = language
+        },
+
+        setLoadingState: (state, action) => {
+            const {
+                payload: {
+                    isLoading,
+                }
+            } = action;
+
+            state.language = isLoading;
         }
     }
 });
 
-export const { updateFile, clearState, changeMode, changeLanguage } = mangaSlice.actions;
+export const { updateFile, clearState, changeMode, changeLanguage, setLoadingState } = mangaSlice.actions;
 export const selectMangaList = (state: any) => state.manga.file

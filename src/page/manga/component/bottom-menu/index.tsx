@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FaBookOpen } from 'react-icons/fa'
-import { Input, Select } from 'antd';
+import { Input, Select, Spin } from 'antd';
 import { mangaAPI } from '../../../../access';
 import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import './style.scss'
 
 const { TextArea } = Input;
@@ -25,38 +26,35 @@ export const BottomMenu = ({
     convertedText }: BottomMenuProps) => {
     const [translatedText, setTranslatedText] = useState<string>('');
     const [translateLang, setTranslateLang] = useState<string>('en');
+    const [isLoading, setLoading] = useState<boolean>(false);
 
     const handleChange = (value: string) => {
-        console.log(`selected ${value}`);
         setTranslateLang(value);
-      };
+    };
+
+    const translateText = async () => {
+        try {
+            setLoading(true);
+            const response: any = await mangaAPI.translateText(convertedText, translateLang);
+    
+            if (response) {
+                console.log(response[0].translations[0].text);
+                setTranslatedText(response[0].translations[0].text);
+            }
+        } catch (error) {
+            toast.error('translate fail!', {
+                position: toast.POSITION.BOTTOM_CENTER,
+                autoClose: 1500
+            });   
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        const fetchTranslateText = async () => {
-            try {
-                const translateText = async () => {
-                    const response: any = await mangaAPI.translateText(convertedText, translateLang);
+        if (convertedText) translateText();
 
-                    if (response) {
-                        console.log(response[0].translations[0].text);
-                        setTranslatedText(response[0].translations[0].text);
-                    }
-                }
-
-                if (convertedText) translateText();
-
-            } catch (error) {
-                toast.error('translate fail!', {
-                    position: toast.POSITION.BOTTOM_CENTER,
-                    autoClose: 1500
-                });
-            }
-            finally {
-            }
-        };
-
-        fetchTranslateText();
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [convertedText, translateLang]);
 
     return (
@@ -71,23 +69,25 @@ export const BottomMenu = ({
                     />
                 </div>
                 <div className="transalte-text-wrapper">
-                        <Select
-                            className='destination-language'
-                            defaultValue={translateLang}
-                            onChange={handleChange}
-                            options={[
-                                { value: 'vi', label: 'Vietnamese' },
-                                { value: 'en', label: 'English' },
-                                { value: 'fr', label: 'French' },
-                                { value: 'es', label: 'Spanish' },
-                            ]}
-                        />
-                    <TextArea
-                        key={translatedText}
-                        value={translatedText}
-                        autoSize={{ minRows: 5, maxRows: 10 }}
-
+                    <Select
+                        className='destination-language'
+                        defaultValue={translateLang}
+                        onChange={handleChange}
+                        options={[
+                            { value: 'vi', label: 'Vietnamese' },
+                            { value: 'en', label: 'English' },
+                            { value: 'fr', label: 'French' },
+                            { value: 'es', label: 'Spanish' },
+                        ]}
                     />
+                    <Spin spinning={isLoading}>
+                        <TextArea
+                            key={translatedText}
+                            value={translatedText}
+                            autoSize={{ minRows: 5, maxRows: 10 }}
+
+                        />
+                    </Spin>
                 </div>
             </div>
             <div className="page-display">

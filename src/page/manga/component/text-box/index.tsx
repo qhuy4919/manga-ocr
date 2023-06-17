@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { imageDataCollection } from '../image-collection';
 import { Popover, Spin } from 'antd';
 import { mangaAPI } from '../../../../access';
 import { toast } from 'react-toastify';
@@ -96,7 +95,6 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
             ? <Spin/> 
             : <span>{transaltedText}</span>
         }
-        popupVisible={true}
        >
          <div 
             id={`${textBoxId}`} className="text-box-wrapper"
@@ -106,14 +104,14 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
                 top: outlineSpecArray[2]* ratio -10 + offsetList.top - 70,
                 width: outlineSpecArray[3] * ratio+ 20 ,
                 height: outlineSpecArray[4] * ratio+ 20 ,
-                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                backgroundColor: 'rgb(64, 150, 255, 0.5)',
             }}
             onMouseEnter={() => {
                 handleMouseDown();
             }}
         ></div>
        </Popover>
-               <img id='current-reader-image' src={pageImage} style={{display: 'none'}} alt={`${textBoxId}`}/>
+        <img id='current-reader-image' src={pageImage} style={{display: 'none'}} alt={`${textBoxId}`}/>
      </>
 
     )

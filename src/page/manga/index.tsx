@@ -4,7 +4,7 @@ import { RootState } from '../../middleware/store';
 import { BottomMenu } from './component'
 import { Sidebar } from '../../component';
 import { imageDataCollection } from './component/image-collection';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { toast, ToastContainer } from 'react-toastify';
 import { mangaAPI } from '../../access';
 import { TextBox } from './component';
@@ -19,7 +19,7 @@ import './style.scss';
 export const ItemReader = () => {
     const imageArray = useSelector((state: RootState) => state.manga.file);
     const MODE = useSelector((state: RootState) => state.manga.mode);
-
+    
     const [showMenus, setShowMenus] = useState(false);
     const [convertedText, setConvertedText] = useState<string>('');
     const [allTextBoxes, setAllTextBoxes] = useState<number[][]>([]);
@@ -28,6 +28,7 @@ export const ItemReader = () => {
     const [pageNumber, setPageNumber] = useState<number>(0);
     const [ratio, setRatio] = useState<number>(1);
     const [offsetList, setOffsetList] = useState<Record<string, any>>({});
+    const [isLoading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         imageDataCollection.initiateAndSaveAllNewImagesData(imageArray);
@@ -132,26 +133,32 @@ export const ItemReader = () => {
 
     const handleClick = () => setShowMenus(!showMenus);
 
-    const handleConvertImage2Text = (image: string) => {
+    const handleConvertImage2Text = async (image: string) => {
         const data = {
             message: 'extract text in cropped image',
             content: image,
         }
         try {
+            setLoading(true);
             const convertImage2Text = async () => {
                 const response: any = await mangaAPI.getTextFromImage(data);
 
                 if (response) {
                     setConvertedText(response?.content);
+                    toast.success("Convert Text Successfully!", {
+                        position: toast.POSITION.BOTTOM_RIGHT
+                    });
                 }
             }
 
-            convertImage2Text();
+            await convertImage2Text();
         } catch (error) {
             toast.error('convert fail!', {
-                position: toast.POSITION.BOTTOM_CENTER,
+                position: toast.POSITION.BOTTOM_RIGHT,
                 autoClose: 1500
             });
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -183,6 +190,7 @@ export const ItemReader = () => {
         try {
             if (value === 'detect-all-box') {
                 if (image) {
+                    setLoading(true)
                     const response: any = await mangaAPI.detextAllBox({
                         message: 'detect all textboxes',
                         content: image.toDataURL('image/png'),
@@ -203,6 +211,8 @@ export const ItemReader = () => {
             toast.error("Error Dectect All Boxes !", {
                 position: toast.POSITION.BOTTOM_RIGHT
             });
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -259,6 +269,7 @@ export const ItemReader = () => {
                                 disabled={imageDataCollection.currentImageData === 0}
                                 onClick={handlePreviousPage}
                             />
+                            <Spin spinning={isLoading}>
                             <div id='main-screen-reader' className="each-slide-effect" onClick={handleClick}>
                                 {/* <img key={image} src={image} alt="..." style={{display: 'none'}}/> */}
                                 <canvas id="imageCanvas"></canvas>
@@ -269,6 +280,7 @@ export const ItemReader = () => {
                                     {allTextBoxesData && renderTextBox(allTextBoxesData)}
                                 </div>
                             </div>
+                            </Spin>
                             <Button
                                 className='navigate-button-right'
                                 icon={<RightCircleOutlined />}
