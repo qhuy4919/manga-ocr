@@ -5,8 +5,8 @@ import { toast } from 'react-toastify';
 export const axiosClient = axios.create({
 baseURL: process.env.REACT_APP_API_URL,
 headers: {
-    'content-type': 'application/json',
-    // 'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
 },
 
 paramsSerializer: params => queryString.stringify(params),
