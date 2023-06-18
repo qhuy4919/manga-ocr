@@ -18,7 +18,7 @@ let translateTextOffline = require("./translateTextOffline.js")
 // const listOfVariablesData = require("./app-config.json")
 const HTTPserverPortNumber = process.env.EXPRESS_WEB_API_PORT
 
-app.use(cors({ credentials: true }))
+app.use(cors({ origin: '*' }))
 app.use(bodyParser.json({ limit: '100mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
 
