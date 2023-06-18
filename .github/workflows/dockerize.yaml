@@ -1,0 +1,83 @@
+name: Dockerize branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_to_build:
+        description: "Choose the branch to build. Different branch will have different build commands."
+        required: true
+        default: main
+        type: choice
+        options:
+        - main
+        - back-end
+        - ocr-server
+        - text-detect-server
+        - storage
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch_to_build }}
+
+      - name: Dockerize
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_RapidAPI_Key: ${{ secrets.REACT_APP_RapidAPI_Key }}
+          REACT_APP_TRANSLATE_URL: ${{ secrets.REACT_APP_TRANSLATE_URL }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          BRANCH_TO_BUILD: ${{ inputs.branch_to_build }}
+        run: |
+          echo $DOCKER_ACCESS_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+
+          echo "Building branch '${BRANCH_TO_BUILD}'"
+
+          if [[ "$BRANCH_TO_BUILD" == "main" ]]; then
+            echo "Building and pushing image for `web` (nginx) component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_web:latest \
+                      --build-arg API_URL="$REACT_APP_API_URL" \
+                      --build-arg RAPID_API_KEY="$REACT_APP_RapidAPI_Key" \
+                      --build-arg TRANSLATE_URL="$REACT_APP_TRANSLATE_URL" \
+                      -f docker/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_web:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "back-end" ]]; then
+            echo "Building and pushing image for `api` (express) component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_api:latest -f docker/api/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_api:latest
+
+            echo "Building and pushing image for `router` (flask) component"
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_router:latest -f docker/router/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_router:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "ocr-server" ]]; then
+            echo "Building and pushing image for `ocr` component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_ocr:latest -f docker/ocr/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_ocr:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "text-detect-server" ]]; then
+            echo "Building and pushing image for `textd` (text-detect-server) component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_textd:latest -f docker/textd/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_textd:latest
+
+          elif [[ "$BRANCH_TO_BUILD" == "storage" ]]; then
+            echo "Building and pushing image for `storage` (file-upload-server) component"
+
+            docker build -t ${DOCKER_USERNAME}/manga_ocr_storage:latest -f docker/Dockerfile .
+            docker push ${DOCKER_USERNAME}/manga_ocr_storage:latest
+
+          else
+            echo "branch not supported"
+            exit 1
+          fi
+          echo "ok"
