@@ -224,6 +224,7 @@ export const ItemReader = () => {
         })
 
         return allTextBoxData2Array.map(coordinate => <TextBox
+            key={coordinate[0]}
             ratio={ratio}
             offsetList={offsetList}
             outlineSpecArray={coordinate}

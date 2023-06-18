@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Popover, Spin } from 'antd';
 import { mangaAPI } from '../../../../access';
 import { toast } from 'react-toastify';
@@ -78,14 +78,14 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
         }
     }
 
-    const handleMouseDown = () => {
+    const handleMouseDown = useCallback(() => {
         handleConvertImage2TextAndTranslate(cropToImage(
             outlineSpecArray[1] -10,
             outlineSpecArray[2] - 10,
             outlineSpecArray[3] + 20,
             outlineSpecArray[4] + 20,
         ))
-    }
+    }, [currentLanguage])
 
     return (
      <>
