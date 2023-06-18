@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
+require("dotenv").config();
 const base64Img = require('base64-img');
 const fetch = require('node-fetch');
 const exec = require('child_process').exec;
@@ -15,7 +16,7 @@ let translateTextOffline = require("./translateTextOffline.js")
 
 
 const listOfVariablesData = require("./app-config.json")
-const HTTPserverPortNumber = listOfVariablesData.Manga_Rikai_OCR.HTTPserverPortNumber
+const HTTPserverPortNumber = process.env.EXPRESS_WEB_API_PORT
 
 app.use(cors())
 app.use(bodyParser.json({ limit: '100mb', extended: true }))
@@ -142,7 +143,7 @@ app.post('/', async function (req, res) {
   }
 });
 
-app.listen(HTTPserverPortNumber, function (err) {
+app.listen(HTTPserverPortNumber,  '0.0.0.0', function (err) {
   if (err) {
     throw err;
   }
