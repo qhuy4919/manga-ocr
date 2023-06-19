@@ -1,6 +1,5 @@
 from Manga_OCR_Interface import Manga_OCR_Interface
 # from Tesseract_OCR_Interface import Tesseract_OCR_Interface
-import pyperclip
 
 
 class OCR_Interface:
@@ -14,9 +13,9 @@ class OCR_Interface:
 
     def imageToText(self, inputImagePath):
         result = self.currentOCRmodel.imageToText(inputImagePath)
-        if (self.pasteToClipboardState == True):
-            pyperclip.copy(result)
-            pyperclip.paste()
+        # if (self.pasteToClipboardState == True):
+        #     pyperclip.copy(result)
+        #     pyperclip.paste()
         return result
 
     def getListOfSupportedLanguages(self):

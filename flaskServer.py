@@ -43,9 +43,8 @@ def sendImage():
         start = timer()
         inputImagePath = getImagefromExpress(fileName)
         ocrOutput = ocr_interface.imageToText(inputImagePath)
-        # print('@@@@@@@@@@@@@@', inputImagePath)
         end = timer()
-        print(end - start)
+        print('processing time: ',end - start)
         return json.dumps(ocrOutput.strip())
 
     if (message == "close server"):
