@@ -98,35 +98,33 @@ class ImageSaveData {
 
     convertAndAddAllCoordinatesArraysFromServer(thisArrayOfCoordinatesArray) {
 
-        let minimumWidth = this.imageSizeArray[0] / 35 //60 to preserve leftover words
+        // let minimumWidth = this.imageSizeArray[0] / 35 //60 to preserve leftover words
         console.log("image Size here", this.returnImageSize())
         this.reset()
 
         thisArrayOfCoordinatesArray.forEach(coordinatesArray => {
-            let currentWidth = coordinatesArray[2]
-            let currentHeight = coordinatesArray[3]
+            // let currentWidth = coordinatesArray[2]
+            // let currentHeight = coordinatesArray[3]
             let textboxID = `${coordinatesArray[0]}${coordinatesArray[1]}`
 
-            if (currentWidth > currentHeight || currentWidth < minimumWidth) {
-                console.log("this is not a text box")
-            }
-            else {
-                let newX = coordinatesArray[0]
-                let newY = coordinatesArray[1]
-                let newWidth = coordinatesArray[2]
-                let newHeight = coordinatesArray[3]
+            // if (currentWidth > currentHeight || currentWidth < minimumWidth) {
+            //     console.log("this is not a text box")
+            // }
 
-                // let newX = coordinatesArray[0] - 10
-                // let newY = coordinatesArray[1] - 10
-                // let newWidth = coordinatesArray[2] + 15
-                // let newHeight = coordinatesArray[3] + 15
+            let newX = coordinatesArray[0]
+            let newY = coordinatesArray[1]
+            let newWidth = coordinatesArray[2]
+            let newHeight = coordinatesArray[3]
 
-                let emptyText = "No text yet"
-                let convertedTextboxArray = [textboxID, newX, newY, newWidth, newHeight, emptyText, emptyText]
+            // let newX = coordinatesArray[0] - 10
+            // let newY = coordinatesArray[1] - 10
+            // let newWidth = coordinatesArray[2] + 15
+            // let newHeight = coordinatesArray[3] + 15
 
-                this.listOfTextBoxes.set(textboxID, convertedTextboxArray)
-            }
+            let emptyText = "No text yet"
+            let convertedTextboxArray = [textboxID, newX, newY, newWidth, newHeight, emptyText, emptyText]
 
+            this.listOfTextBoxes.set(textboxID, convertedTextboxArray)
         });
 
         console.log(this.getListOfTextBoxes())
@@ -235,10 +233,10 @@ class ImagesDataCollection {
 
             var drawingCanvas = document.getElementById("overlayCanvas") as HTMLCanvasElement;
             var overlayCtx = drawingCanvas.getContext("2d")
-        
+
             const _ImageCanvas = new ImageCanvas(imgCanvas, imageCtx);
             const _OverlayCanvas = new OverlayCanvas(drawingCanvas, overlayCtx);
-            
+
             _ImageCanvas.resizeCanvas(imageObj.width, imageObj.height)
             _OverlayCanvas.resizeCanvas(imageObj.width, imageObj.height)
             console.log(imageObj);

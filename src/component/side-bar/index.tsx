@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Menu, Switch, Select } from 'antd';
+import { Menu, Switch, Select, Button } from 'antd';
 import type { MenuProps, SwitchProps } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
 import { changeLanguage, changeMode } from '../../middleware/manga-slice';
@@ -56,7 +56,7 @@ export const Sidebar = ({
     }
 
     const handleChangeLanguage = (value: string) => {
-        dispatch(changeLanguage({language: value}))
+        dispatch(changeLanguage({ language: value }))
     };
 
     const items: MenuProps['items'] = [
@@ -70,12 +70,8 @@ export const Sidebar = ({
             ]),
         getItem('Edit', 'edit', <BookOutlined />, [
             getItem('Detect All Textbox', 'detect-all-box', null),
-        ]),
-        // getItem('Export', 'sub2', <SettingOutlined />, [
-        //     getItem('PDF', 'export-pdf'),
-        //     getItem('Image', 'export-image'),
-        // ]),
 
+        ]),
         { type: 'divider' },
     ];
 
@@ -89,23 +85,23 @@ export const Sidebar = ({
                 mode="inline"
                 items={items}
             />
-             <div className="preview-section language-section">
+            <div className="preview-section language-section">
                 <div className="label">Translate Languages</div>
                 <Select
-                className='destination-language'
-                value={currentLanguage}
-                onChange={handleChangeLanguage}
-                options={[
-                    { value: 'vi', label: 'Vietnamese' },
-                    { value: 'en', label: 'English' },
-                    { value: 'fr', label: 'French' },
-                    { value: 'es', label: 'Spanish' },
-                ]}
-            />            </div>
-         
+                    className='destination-language'
+                    value={currentLanguage}
+                    onChange={handleChangeLanguage}
+                    options={[
+                        { value: 'vi', label: 'Vietnamese' },
+                        { value: 'en', label: 'English' },
+                        { value: 'fr', label: 'French' },
+                        { value: 'es', label: 'Spanish' },
+                    ]}
+                />            </div>
+
             <div className="preview-section">
                 <div className="label">Image Preivew</div>
-                <img id='preview-crop-image' alt=''/>
+                <img id='preview-crop-image' alt='' />
             </div>
         </div>
     );

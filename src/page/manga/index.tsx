@@ -8,6 +8,7 @@ import { Button, Spin } from 'antd';
 import { toast, ToastContainer } from 'react-toastify';
 import { mangaAPI } from '../../access';
 import { TextBox } from './component';
+import { cropImageViaCoordinate } from '../../util'
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
 import "cropperjs/dist/cropper.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,10 +20,10 @@ import './style.scss';
 export const ItemReader = () => {
     const imageArray = useSelector((state: RootState) => state.manga.file);
     const MODE = useSelector((state: RootState) => state.manga.mode);
-    
+
     const [showMenus, setShowMenus] = useState(false);
     const [convertedText, setConvertedText] = useState<string>('');
-    const [allTextBoxes, setAllTextBoxes] = useState<number[][]>([]);
+    const [allTextBoxes, setAllTextBoxes] = useState<any>([]);
     const [allTextBoxesData, setAllTextBoxesData] = useState<any>();
     const [pageImage, setPageImage] = useState<string>('');
     const [pageNumber, setPageNumber] = useState<number>(0);
@@ -39,7 +40,7 @@ export const ItemReader = () => {
     useEffect(() => {
         window.addEventListener("beforeunload", handleAlertWhenReload);
         return () => {
-          window.removeEventListener("beforeunload", handleAlertWhenReload);
+            window.removeEventListener("beforeunload", handleAlertWhenReload);
         };
     }, []);
 
@@ -79,8 +80,6 @@ export const ItemReader = () => {
                         }).toDataURL('image/png');
                         var cropImage = new Image();
                         cropImage.src = cropImageCanvasUrl;
-                        // var ctx = cropImageElement.getContext('2d');
-                        // ctx?.drawImage(cropImage, 0, 0);
                         cropImageElement.src = cropImageCanvasUrl;
 
                         handleConvertImage2Text(cropImageCanvasUrl);
@@ -111,6 +110,7 @@ export const ItemReader = () => {
                 const currentImage = await imageDataCollection.getCurrentSaveData();
                 if (currentImage && image) {
                     currentImage.convertAndAddAllCoordinatesArraysFromServer(allTextBoxes);
+                    await convertImage2Text(imageDataCollection.getAllTextboxesDataFromAnImage());
                     setAllTextBoxesData(imageDataCollection.getAllTextboxesDataFromAnImage());
                     showAllTextBox();
 
@@ -118,7 +118,7 @@ export const ItemReader = () => {
             }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    });
+    }, [JSON.stringify(allTextBoxes)]);
 
     const showAllTextBox = () => {
         const outlinesContainer = document.getElementById("outlinesContainer");
@@ -128,7 +128,7 @@ export const ItemReader = () => {
     }
 
     const handleAlertWhenReload = () => {
-        alert( "This page is reloaded and all current image all gone" );
+        alert("This page is reloaded and all current image all gone");
     }
 
     const handleClick = () => setShowMenus(!showMenus);
@@ -163,8 +163,7 @@ export const ItemReader = () => {
     }
 
     const handleClickSideBar = async (value: string) => {
-        setAllTextBoxes([]);
-        setAllTextBoxesData([]);
+
         const image = document.getElementById('imageCanvas') as HTMLCanvasElement;
         const originalImageSize = [
             image.width,
@@ -184,11 +183,12 @@ export const ItemReader = () => {
         })
 
 
-        // const image = await toCanvas(imageElement);
         setPageImage(image.toDataURL());
 
         try {
             if (value === 'detect-all-box') {
+                setAllTextBoxes([]);
+                setAllTextBoxesData([]);
                 if (image) {
                     setLoading(true)
                     const response: any = await mangaAPI.detextAllBox({
@@ -232,6 +232,56 @@ export const ItemReader = () => {
         />)
     }
 
+
+
+    const convertImage2Text = async (coordinateMap: any) => {
+        //convert map to object
+        let normalizeCoordinateMap = Object.fromEntries(coordinateMap)
+        try {
+            setLoading(true);
+            const coordinateEntryList = Object.entries(normalizeCoordinateMap);
+            const handleConvertText = coordinateEntryList.map(outlineSpecArray => {
+
+                const image = cropImageViaCoordinate(
+                    outlineSpecArray[1][1] - 10,
+                    outlineSpecArray[1][2] - 10,
+                    outlineSpecArray[1][3] + 20,
+                    outlineSpecArray[1][4] + 20,
+                    outlineSpecArray[0][0],
+                )
+                const data = {
+                    message: 'extract text in cropped image',
+                    content: image,
+                }
+                return mangaAPI.getTextFromImage(data);
+            });
+
+
+            (await Promise
+                .allSettled(handleConvertText))
+                .map((entry, index) => {
+                    if (entry.status === 'fulfilled') {
+                        const response: any = entry.value;
+                        let convertedText = response.content as any;
+                        imageDataCollection.getCurrentSaveData().saveExtractedText(coordinateEntryList[index][0], convertedText)
+                        return convertedText;
+                    } else {
+                        return '';
+                    }
+                });
+
+
+        } catch (error) {
+            toast.error('convert fail!', {
+                position: toast.POSITION.BOTTOM_CENTER,
+                autoClose: 1500
+            });
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const handleNextPage = () => {
         setAllTextBoxes([]);
         setAllTextBoxesData([])
@@ -255,7 +305,7 @@ export const ItemReader = () => {
                     <Sidebar getSideBarItemKey={handleClickSideBar} />
                     {
                         MODE === 'MANUAL' && <div className="manual-action-button">
-                            <Button id='crop-button' type='primary'>Submit</Button>
+                            <Button id='crop-button' type='primary'>Scan</Button>
                         </div>
                     }
                 </div>
@@ -271,16 +321,16 @@ export const ItemReader = () => {
                                 onClick={handlePreviousPage}
                             />
                             <Spin spinning={isLoading}>
-                            <div id='main-screen-reader' className="each-slide-effect" onClick={handleClick}>
-                                {/* <img key={image} src={image} alt="..." style={{display: 'none'}}/> */}
-                                <canvas id="imageCanvas"></canvas>
-                                <canvas id='cropCanvas' style={{ display: 'none' }}></canvas>
+                                <div id='main-screen-reader' className="each-slide-effect" onClick={handleClick}>
+                                    {/* <img key={image} src={image} alt="..." style={{display: 'none'}}/> */}
+                                    <canvas id="imageCanvas"></canvas>
+                                    <canvas id='cropCanvas' style={{ display: 'none' }}></canvas>
 
-                                <canvas id="overlayCanvas" style={{ display: 'none' }}></canvas>
-                                <div key={JSON.stringify(allTextBoxes)} id="outlinesContainer" style={{ display: 'none' }}>
-                                    {allTextBoxesData && renderTextBox(allTextBoxesData)}
+                                    <canvas id="overlayCanvas" style={{ display: 'none' }}></canvas>
+                                    <div key={JSON.stringify(allTextBoxes)} id="outlinesContainer" style={{ display: 'none' }}>
+                                        {allTextBoxesData && renderTextBox(allTextBoxesData)}
+                                    </div>
                                 </div>
-                            </div>
                             </Spin>
                             <Button
                                 className='navigate-button-right'
