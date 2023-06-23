@@ -98,33 +98,35 @@ class ImageSaveData {
 
     convertAndAddAllCoordinatesArraysFromServer(thisArrayOfCoordinatesArray) {
 
-        // let minimumWidth = this.imageSizeArray[0] / 35 //60 to preserve leftover words
+        let minimumWidth = this.imageSizeArray[0] / 35 //60 to preserve leftover words
         console.log("image Size here", this.returnImageSize())
         this.reset()
 
         thisArrayOfCoordinatesArray.forEach(coordinatesArray => {
-            // let currentWidth = coordinatesArray[2]
-            // let currentHeight = coordinatesArray[3]
+            let currentWidth = coordinatesArray[2]
+            let currentHeight = coordinatesArray[3]
             let textboxID = `${coordinatesArray[0]}${coordinatesArray[1]}`
 
-            // if (currentWidth > currentHeight || currentWidth < minimumWidth) {
-            //     console.log("this is not a text box")
-            // }
+            if (currentWidth > currentHeight || currentWidth < minimumWidth) {
+                console.log("this is not a text box")
+            }
+            else {
+                let newX = coordinatesArray[0]
+                let newY = coordinatesArray[1]
+                let newWidth = coordinatesArray[2]
+                let newHeight = coordinatesArray[3]
 
-            let newX = coordinatesArray[0]
-            let newY = coordinatesArray[1]
-            let newWidth = coordinatesArray[2]
-            let newHeight = coordinatesArray[3]
+                // let newX = coordinatesArray[0] - 10
+                // let newY = coordinatesArray[1] - 10
+                // let newWidth = coordinatesArray[2] + 15
+                // let newHeight = coordinatesArray[3] + 15
 
-            // let newX = coordinatesArray[0] - 10
-            // let newY = coordinatesArray[1] - 10
-            // let newWidth = coordinatesArray[2] + 15
-            // let newHeight = coordinatesArray[3] + 15
+                let emptyText = "No text yet"
+                let convertedTextboxArray = [textboxID, newX, newY, newWidth, newHeight, emptyText, emptyText]
 
-            let emptyText = "No text yet"
-            let convertedTextboxArray = [textboxID, newX, newY, newWidth, newHeight, emptyText, emptyText]
+                this.listOfTextBoxes.set(textboxID, convertedTextboxArray)
+            }
 
-            this.listOfTextBoxes.set(textboxID, convertedTextboxArray)
         });
 
         console.log(this.getListOfTextBoxes())
