@@ -153,12 +153,11 @@ app.get('/loaderio-1e7e59df7a3a49a844cd4a1dceae421f/', async function (req, res)
 
 app.post('/testing-loaderio', async function (req, res) {
 
-  var imageAsBase64 = fs.readFileSync('./croppedImage.png', 'base64');
-  let message = "extract text in cropped image";
+  var imageAsBase64 = fs.readFileSync('./croppedImage.png', {encoding: 'base64'});
+  imageAsBase64 = " data:image/png;base64," + imageAsBase64
+  console.log(imageAsBase64.substring(0, 100));
+  await extractTextFromImage(imageAsBase64, res)
 
-  if (message == "extract text in cropped image") {
-    await extractTextFromImage(imageAsBase64, res)
-  }
 
 });
 
