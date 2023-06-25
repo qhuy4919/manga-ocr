@@ -143,7 +143,11 @@ app.post('/', async function (req, res) {
   }
 });
 
-app.get('/loaderio', async function (req, res) {
+app.get('/loaderio-1e7e59df7a3a49a844cd4a1dceae421f/', async function (req, res) {
+  res.header({
+    'Content-Disposition': 'attachment; filename="loaderio-1e7e59df7a3a49a844cd4a1dceae421f.txt"'
+
+  })
   res.send('loaderio-1e7e59df7a3a49a844cd4a1dceae421f');
 })
 
