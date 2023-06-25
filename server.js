@@ -143,6 +143,10 @@ app.post('/', async function (req, res) {
   }
 });
 
+app.get('/loaderio', async function (req, res) {
+  res.send('loaderio-1e7e59df7a3a49a844cd4a1dceae421f');
+})
+
 app.listen(HTTPserverPortNumber,  '0.0.0.0', function (err) {
   if (err) {
     throw err;
