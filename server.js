@@ -156,14 +156,7 @@ app.post('/testing-loaderio', async function (req, res) {
   var imageAsBase64 = fs.readFileSync('./croppedImage.png', 'base64');
   let message = "extract text in cropped image";
 
-  if (!body.content) {
-    res.json({
-      status: 400,
-      error: 'Invalid content'
-    })
-  }
-
-  else if (message == "extract text in cropped image") {
+  if (message == "extract text in cropped image") {
     await extractTextFromImage(imageAsBase64, res)
   }
 
