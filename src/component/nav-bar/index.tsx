@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Menu } from 'antd';
 import logo from '../../asset/icon/logo.png';
-import type {MenuProps} from 'antd';
+import type { MenuProps } from 'antd';
 import './style.scss'
+import { useHistory } from 'react-router-dom';
 
 const MenuItem: MenuProps['items'] = [
     {
@@ -13,13 +14,14 @@ const MenuItem: MenuProps['items'] = [
 ];
 
 export const Navbar = () => {
-    const [currentKey, setCurrentKey] = useState('');
+    const history = useHistory();
 
     const handleClickNavBar: MenuProps['onClick'] = (e) => {
-        setCurrentKey(e.key);
+        if (e.key === 'app-icon')
+            history.push('/')
     }
 
-  return (
-        <Menu className='app-navbar' onClick={handleClickNavBar} selectedKeys={[currentKey]} mode="horizontal" items={MenuItem} />
+    return (
+        <Menu className='app-navbar' onClick={handleClickNavBar} mode="horizontal" items={MenuItem} />
     );
 };

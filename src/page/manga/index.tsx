@@ -4,12 +4,12 @@ import { RootState } from '../../middleware/store';
 import { BottomMenu } from './component'
 import { Sidebar } from '../../component';
 import { imageDataCollection } from './component/image-collection';
-import { Button, Spin } from 'antd';
 import { toast, ToastContainer } from 'react-toastify';
 import { mangaAPI } from '../../access';
 import { TextBox } from './component';
 import { cropImageViaCoordinate } from '../../util'
-import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
+import { LeftCircleOutlined, RightCircleOutlined, CheckCircleFilled } from '@ant-design/icons';
+import { Button, Spin } from 'antd';
 import "cropperjs/dist/cropper.css";
 import "react-toastify/dist/ReactToastify.css";
 import Cropper from 'cropperjs';
@@ -24,12 +24,13 @@ export const ItemReader = () => {
     const [showMenus, setShowMenus] = useState(false);
     const [convertedText, setConvertedText] = useState<string>('');
     const [allTextBoxes, setAllTextBoxes] = useState<any>([]);
-    const [allTextBoxesData, setAllTextBoxesData] = useState<any>();
+    const [allTextBoxesData, setAllTextBoxesData] = useState<any>([]);
     const [pageImage, setPageImage] = useState<string>('');
     const [pageNumber, setPageNumber] = useState<number>(0);
     const [ratio, setRatio] = useState<number>(1);
     const [offsetList, setOffsetList] = useState<Record<string, any>>({});
     const [isLoading, setLoading] = useState<boolean>(false);
+    const [isProcessTextBox, setProcessTextBox] = useState<boolean>(false);
 
     useEffect(() => {
         imageDataCollection.initiateAndSaveAllNewImagesData(imageArray);
@@ -112,7 +113,7 @@ export const ItemReader = () => {
                     currentImage.convertAndAddAllCoordinatesArraysFromServer(allTextBoxes);
                     await convertImage2Text(imageDataCollection.getAllTextboxesDataFromAnImage());
                     setAllTextBoxesData(imageDataCollection.getAllTextboxesDataFromAnImage());
-                    showAllTextBox();
+                    // showAllTextBox();
 
                 }
             }
@@ -121,9 +122,18 @@ export const ItemReader = () => {
     }, [JSON.stringify(allTextBoxes)]);
 
     const showAllTextBox = () => {
-        const outlinesContainer = document.getElementById("outlinesContainer");
-        if (outlinesContainer) {
-            outlinesContainer.style.display = 'block';
+        const textBoxListCollection = document.getElementById("outlinesContainer")?.children;
+        if (textBoxListCollection) {
+            for (let i = 0; i < textBoxListCollection.length; i++) {
+                (textBoxListCollection[i] as HTMLElement).style.display = 'block';
+            }
+        }
+    }
+
+    const showTextBoxById = (textBoxId: string) => {
+        const textBoxContainer = document.getElementById(`text-box-${textBoxId}`);
+        if (textBoxContainer) {
+            textBoxContainer.style.display = 'block';
         }
     }
 
@@ -140,7 +150,7 @@ export const ItemReader = () => {
         }
         try {
             setLoading(true);
-            const convertImage2Text = async () => {
+            const internalConvertImage2Text = async () => {
                 const response: any = await mangaAPI.getTextFromImage(data);
 
                 if (response) {
@@ -151,7 +161,7 @@ export const ItemReader = () => {
                 }
             }
 
-            await convertImage2Text();
+            await internalConvertImage2Text();
         } catch (error) {
             toast.error('convert fail!', {
                 position: toast.POSITION.BOTTOM_RIGHT,
@@ -238,37 +248,39 @@ export const ItemReader = () => {
         //convert map to object
         let normalizeCoordinateMap = Object.fromEntries(coordinateMap)
         try {
-            setLoading(true);
+            setProcessTextBox(true);
+            let successPromiseCnt = 0;
             const coordinateEntryList = Object.entries(normalizeCoordinateMap);
-            const handleConvertText = coordinateEntryList.map(outlineSpecArray => {
+            const handleConvertText = async outlineSpecArray => {
+                const textBoxId = outlineSpecArray[0];
+
 
                 const image = cropImageViaCoordinate(
                     outlineSpecArray[1][1] - 10,
                     outlineSpecArray[1][2] - 10,
                     outlineSpecArray[1][3] + 20,
                     outlineSpecArray[1][4] + 20,
-                    outlineSpecArray[0][0],
+                    textBoxId
                 )
                 const data = {
                     message: 'extract text in cropped image',
                     content: image,
                 }
+
                 return mangaAPI.getTextFromImage(data);
+            };
+
+            coordinateEntryList.map(async outlineSpecArray => {
+                const textBoxId = outlineSpecArray[0];
+                const response: any = await handleConvertText(outlineSpecArray);
+                let convertedText = response.content as any;
+                successPromiseCnt += 1;
+                if (successPromiseCnt === coordinateEntryList.length) setProcessTextBox(false);
+                imageDataCollection.getCurrentSaveData().saveExtractedText(textBoxId, convertedText);
+                showTextBoxById(textBoxId);
             });
 
-
-            (await Promise
-                .allSettled(handleConvertText))
-                .map((entry, index) => {
-                    if (entry.status === 'fulfilled') {
-                        const response: any = entry.value;
-                        let convertedText = response.content as any;
-                        imageDataCollection.getCurrentSaveData().saveExtractedText(coordinateEntryList[index][0], convertedText)
-                        return convertedText;
-                    } else {
-                        return '';
-                    }
-                });
+            showAllTextBox();
 
 
         } catch (error) {
@@ -296,7 +308,6 @@ export const ItemReader = () => {
         setPageNumber(pageNumber - 1);
     }
 
-
     return (
         <>
             <div className="reader-container">
@@ -308,6 +319,17 @@ export const ItemReader = () => {
                             <Button id='crop-button' type='primary'>Scan</Button>
                         </div>
                     }
+                    {
+                        <div className="manual-action-button">
+                            {
+                                isProcessTextBox ? <Spin /> : <CheckCircleFilled style={{
+                                    color: '#43a047',
+                                    fontSize: '2.5rem',
+                                }} />
+                            }
+                        </div>
+                    }
+
                 </div>
                 {imageArray && (
                     <div className='slider-container'>
@@ -327,7 +349,7 @@ export const ItemReader = () => {
                                     <canvas id='cropCanvas' style={{ display: 'none' }}></canvas>
 
                                     <canvas id="overlayCanvas" style={{ display: 'none' }}></canvas>
-                                    <div key={JSON.stringify(allTextBoxes)} id="outlinesContainer" style={{ display: 'none' }}>
+                                    <div key={JSON.stringify(allTextBoxes)} id="outlinesContainer" style={{ display: 'block' }}>
                                         {allTextBoxesData && renderTextBox(allTextBoxesData)}
                                     </div>
                                 </div>

@@ -290,7 +290,7 @@ class ImagesDataCollection {
     }
 
     showID() {
-        document.getElementById("ImageID")!.innerHTML = `ID: ${this.currentImageData + 1}/${this.listOfImagesData.length}`
+        document.getElementById("ImageID")!.innerHTML = `Page: ${this.currentImageData + 1}/${this.listOfImagesData.length}`
 
     }
 

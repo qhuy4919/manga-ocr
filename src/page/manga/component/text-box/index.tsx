@@ -47,6 +47,7 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
     }
     const handleMouseDown = useCallback(async () => {
         await handleTranslateText(imageDataCollection.getCurrentSaveData().getExtractedText(textBoxId) as string);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentLanguage, textBoxId])
 
     return (
@@ -59,7 +60,7 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
                 }
             >
                 <div
-                    id={`${textBoxId}`} className="text-box-wrapper"
+                    id={`text-box-${textBoxId}`} className="text-box-wrapper"
                     style={{
                         position: 'absolute',
                         left: outlineSpecArray[1] * ratio - 10 + offsetList.left - 200,
@@ -67,6 +68,7 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
                         width: outlineSpecArray[3] * ratio + 20,
                         height: outlineSpecArray[4] * ratio + 20,
                         backgroundColor: 'rgb(64, 150, 255, 0.5)',
+                        display: 'none'
                     }}
                     onMouseEnter={() => {
                         handleMouseDown();
