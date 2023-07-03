@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Popover, Spin } from 'antd';
 import { mangaAPI } from '../../../../access';
 import { toast } from 'react-toastify';
@@ -19,36 +19,41 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
     const [isLoading, setLoading] = useState<boolean>(false);
     const [transaltedText, setTranslatedText] = useState<string>('...');
     const currentLanguage = useSelector((state: RootState) => state.manga.language);
+    const lastTranslatedLanguage = useRef('');
 
     const handleTranslateText = async (text: string) => {
-        setLoading(true);
-        try {
-            const translateText = async () => {
-                const response: any = await mangaAPI.translateText(text, currentLanguage);
+        if (lastTranslatedLanguage.current !== currentLanguage) {
+            lastTranslatedLanguage.current = currentLanguage;
+            setLoading(true);
+            try {
+                const translateText = async () => {
+                    const response: any = await mangaAPI.translateText(text, currentLanguage);
 
-                if (response) {
-                    console.log(response[0].translations[0].text);
-                    setTranslatedText(response[0].translations[0].text);
+                    if (response) {
+                        console.log(response[0].translations[0].text);
+                        setTranslatedText(response[0].translations[0].text);
+                    }
                 }
+
+                await translateText();
+
+
+
+            } catch (error) {
+                toast.error('translate fail!', {
+                    position: toast.POSITION.BOTTOM_CENTER,
+                    autoClose: 1500
+                });
+            } finally {
+                setLoading(false);
             }
-
-            await translateText();
-
-
-
-        } catch (error) {
-            toast.error('translate fail!', {
-                position: toast.POSITION.BOTTOM_CENTER,
-                autoClose: 1500
-            });
-        } finally {
-            setLoading(false);
         }
-    }
-    const handleMouseDown = useCallback(async () => {
+    };
+
+    const handleMouseDown = async () => {
         await handleTranslateText(imageDataCollection.getCurrentSaveData().getExtractedText(textBoxId) as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentLanguage, textBoxId])
+    }
 
     return (
         <>

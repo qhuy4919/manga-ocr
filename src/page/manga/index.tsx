@@ -69,6 +69,8 @@ export const ItemReader = () => {
                 scalable: false,
             });
 
+            hiddenAllTextBox();
+
 
             if (cropButton) {
                 cropButtonEvent = () => {
@@ -126,6 +128,15 @@ export const ItemReader = () => {
         if (textBoxListCollection) {
             for (let i = 0; i < textBoxListCollection.length; i++) {
                 (textBoxListCollection[i] as HTMLElement).style.display = 'block';
+            }
+        }
+    }
+
+    const hiddenAllTextBox = () => {
+        const textBoxListCollection = document.getElementById("outlinesContainer")?.children;
+        if (textBoxListCollection) {
+            for (let i = 0; i < textBoxListCollection.length; i++) {
+                (textBoxListCollection[i] as HTMLElement).style.display = 'none';
             }
         }
     }
@@ -315,19 +326,19 @@ export const ItemReader = () => {
                 <div className="sidebar-container">
                     <Sidebar getSideBarItemKey={handleClickSideBar} />
                     {
-                        MODE === 'MANUAL' && <div className="manual-action-button">
-                            <Button id='crop-button' type='primary'>Scan</Button>
-                        </div>
-                    }
-                    {
-                        <div className="manual-action-button">
-                            {
-                                isProcessTextBox ? <Spin /> : <CheckCircleFilled style={{
-                                    color: '#43a047',
-                                    fontSize: '2.5rem',
-                                }} />
-                            }
-                        </div>
+                        MODE === 'MANUAL'
+                            ?
+                            <div className="manual-action-button">
+                                <Button id='crop-button' type='primary'>Scan</Button>
+                            </div>
+                            : <div className="manual-action-button">
+                                {
+                                    isProcessTextBox ? <Spin /> : <CheckCircleFilled style={{
+                                        color: '#43a047',
+                                        fontSize: '2.5rem',
+                                    }} />
+                                }
+                            </div>
                     }
 
                 </div>
