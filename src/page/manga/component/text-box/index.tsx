@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Popover, Spin } from 'antd';
 import { mangaAPI } from '../../../../access';
 import { toast } from 'react-toastify';
@@ -30,7 +30,6 @@ export const TextBox = ({ outlineSpecArray, pageImage, ratio, offsetList }: Text
                     const response: any = await mangaAPI.translateText(text, currentLanguage);
 
                     if (response) {
-                        console.log(response[0].translations[0].text);
                         setTranslatedText(response[0].translations[0].text);
                     }
                 }
