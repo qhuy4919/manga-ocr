@@ -1,0 +1,134 @@
+{
+    "query": "gantz",
+    "result": [
+        {
+            "source": "Mangadex",
+            "mangal": {
+                "name": "Gantz",
+                "url": "https://mangadex.org/title/c196dcc8-d942-4abf-987f-bfa244650585",
+                "index": 0,
+                "id": "c196dcc8-d942-4abf-987f-bfa244650585",
+                "chapters": [
+                    {
+                        "name": "Chapter 2 - An Inexplicable Room",
+                        "url": "https://mangadex.org/chapter/9b39f2cd-3725-4a3d-a9f7-66427c946ff0",
+                        "index": 2,
+                        "id": "9b39f2cd-3725-4a3d-a9f7-66427c946ff0",
+                        "volume": "Vol.1",
+                        "pages": null
+                    },
+                    {
+                        "name": "Chapter 3 - The Naked Suicide Girl",
+                        "url": "https://mangadex.org/chapter/982ad24b-b756-4de2-806c-c3024a4e1534",
+                        "index": 3,
+                        "id": "982ad24b-b756-4de2-806c-c3024a4e1534",
+                        "volume": "Vol.1",
+                        "pages": null
+                    },
+                    {
+                        "name": "Chapter 4 - The Black Ball's Orders",
+                        "url": "https://mangadex.org/chapter/df9e3b5f-37fb-4512-889d-c7115b750230",
+                        "index": 4,
+                        "id": "df9e3b5f-37fb-4512-889d-c7115b750230",
+                        "volume": "Vol.1",
+                        "pages": null
+                    },
+                    {
+                        "name": "Chapter 5 - Illusion",
+                        "url": "https://mangadex.org/chapter/035efa81-758b-4776-934b-fea44fc9f683",
+                        "index": 5,
+                        "id": "035efa81-758b-4776-934b-fea44fc9f683",
+                        "volume": "Vol.1",
+                        "pages": null
+                    },
+                    {
+                        "name": "Chapter 6 - Encounter with the Onion Alien",
+                        "url": "https://mangadex.org/chapter/1fa07d0d-ac54-4b2e-b981-7a82df8f8443",
+                        "index": 6,
+                        "id": "1fa07d0d-ac54-4b2e-b981-7a82df8f8443",
+                        "volume": "Vol.1",
+                        "pages": null
+                    }
+                ],
+                "metadata": {
+                    "genres": [
+                        "Action",
+                        "Drama",
+                        "Ecchi",
+                        "Horror",
+                        "Psychological",
+                        "Sci-Fi",
+                        "Supernatural"
+                    ],
+                    "summary": "Tokyo teens Kei and Masaru are killed by a subway train but awaken in a room with an ominous black orb that gives them weapons, suits and orders. Fighting bizarre alien monstrosities in a deadly game, will they win their freedom or die for the final time?\n\n\n(Source: Dark Horse)",
+                    "staff": {
+                        "story": [
+                            "Hiroya Oku"
+                        ],
+                        "art": [],
+                        "translation": [
+                            "Drik Sada",
+                            "Marc Bernabé"
+                        ],
+                        "lettering": []
+                    },
+                    "cover": {
+                        "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30564-ucMJLXpxHJKI.jpg",
+                        "large": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx30564-ucMJLXpxHJKI.jpg",
+                        "medium": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/small/bx30564-ucMJLXpxHJKI.jpg",
+                        "color": "#780d0d"
+                    },
+                    "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30564-kRtGCFJctwXJ.jpg",
+                    "tags": [
+                        "Survival",
+                        "Gore",
+                        "Seinen",
+                        "Aliens",
+                        "Tragedy",
+                        "Death Game",
+                        "Urban",
+                        "Guns",
+                        "Cosmic Horror",
+                        "Nudity",
+                        "Philosophy",
+                        "Ensemble Cast",
+                        "Heterosexual",
+                        "Super Power"
+                    ],
+                    "characters": [
+                        "Shion Izumi",
+                        "Masaru Katou",
+                        "Daizaemon Kaze",
+                        "Tae Kojima",
+                        "Kei Kurono",
+                        "Joichiro Nishi",
+                        "Hiroto Sakurai",
+                        "Reika Shimohira"
+                    ],
+                    "status": "FINISHED",
+                    "startDate": {
+                        "year": 2000,
+                        "month": 7,
+                        "day": 13
+                    },
+                    "endDate": {
+                        "year": 2013,
+                        "month": 6,
+                        "day": 20
+                    },
+                    "synonyms": [
+                        "ガンツ",
+                        "Gantz/Osaka"
+                    ],
+                    "chapters": 383,
+                    "urls": [
+                        "https://anilist.co/manga/30564",
+                        "https://shonenjumpplus.com/episode/10834108156628773289",
+                        "https://myanimelist.net/manga/564"
+                    ]
+                }
+            },
+            "anilist": null
+        }
+    ]
+}

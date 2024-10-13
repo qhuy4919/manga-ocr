@@ -11,13 +11,16 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import environ
-
-env = environ.Env()
-environ.Env().read_env()
+from dotenv import load_dotenv
+import os
+from os.path import join
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+dotenv_path = join(BASE_DIR, '.env')
+load_dotenv(dotenv_path)
 
 
 # Quick-start development settings - unsuitable for production
@@ -33,6 +36,9 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+MANGALAMBADA_APPS = [
+    'manga.apps.MangaConfig'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -41,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+] + MANGALAMBADA_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,15 +85,14 @@ WSGI_APPLICATION = 'mangalambada.wsgi.application'
 
 DATABASES = {
     'default': {
-       'ENGINE': 'django.db.backends.postgresq',
-       'NAME': env("DB_NAME"),
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': env("DB_PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
